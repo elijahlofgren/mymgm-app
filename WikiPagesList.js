@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { AppRegistry, ListView, Text, View } from 'react-native';
+import { AppRegistry, ListView, Text, View, TouchableOpacity } from 'react-native';
 
-class WikiPages extends Component {
+class WikiPagesList extends Component {
   // Initialize the hardcoded data
   constructor(props) {
     super(props);
@@ -17,10 +17,22 @@ class WikiPages extends Component {
       <View style={{ paddingTop: 22 }}>
         <ListView
           dataSource={this.state.dataSource}
-          renderRow={(rowData) => <Text>{rowData.name}</Text>}
+          renderRow={(rowData) =>
+            <TouchableOpacity onPress={this.openWikiPage(rowData)}>
+              <Text>{rowData.name}</Text>
+            </TouchableOpacity>
+          }
           />
       </View>
     );
+  }
+  
+  openWikiPage(rowData) {
+    // TO DO: Read
+    // http://stackoverflow.com/questions/35465021/simple-goto-page-in-a-listview-in-react-native
+    console.log('openWikiPage() called!');
+    console.log('rowData =');
+    console.log(rowData);
   }
 
   getPagesFromApiAsync() {
@@ -38,4 +50,4 @@ class WikiPages extends Component {
 
 }
 
-module.exports = WikiPages;
+module.exports = WikiPagesList;
