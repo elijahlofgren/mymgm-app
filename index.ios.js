@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { AppRegistry, Text } from 'react-native';
+var WikiPages = require('./WikiPages');
 
 class MyMGM extends Component {
   render() {
@@ -9,4 +10,4 @@ class MyMGM extends Component {
   }
 }
 
-AppRegistry.registerComponent('MyMGM', () => MyMGM);
+AppRegistry.registerComponent('MyMGM', () => WikiPages);
