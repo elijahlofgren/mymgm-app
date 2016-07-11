@@ -5,35 +5,37 @@ class WikiPages extends Component {
   // Initialize the hardcoded data
   constructor(props) {
     super(props);
-    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+    this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
-      dataSource: ds.cloneWithRows([
-        'John', 'Joel', 'James', 'Jimmy', 'Jackson', 'Jillian', 'Julie', 'Devin'
-      ])
+      dataSource: this.ds.cloneWithRows([
+        {name: 'Loading...'}])
     };
+    this.getPagesFromApiAsync();
   }
   render() {
     return (
       <View style={{ paddingTop: 22 }}>
         <ListView
           dataSource={this.state.dataSource}
-          renderRow={(rowData) => <Text>{rowData}</Text>}
+          renderRow={(rowData) => <Text>{rowData.name}</Text>}
           />
       </View>
     );
   }
-  /*
-   getPagesFromApiAsync() {
-      return fetch('https://localwiki.org/api/v4/pages/?region__slug=mgm&format=json')
-        .then((response) => response.json())
-        .then((responseJson) => {
-          return responseJson;
+
+  getPagesFromApiAsync() {
+    return fetch('https://localwiki.org/api/v4/pages/?region__slug=mgm&format=json')
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({
+          dataSource: this.ds.cloneWithRows(responseJson.results)
         })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
-  */
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
 }
 
 module.exports = WikiPages;
