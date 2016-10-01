@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AppRegistry, ListView, Text, View, TouchableOpacity } from 'react-native';
+import { AppRegistry, ListView, Text, View, TouchableOpacity, Linking } from 'react-native';
 
 class WikiPagesList extends Component {
   // Initialize the hardcoded data
@@ -30,9 +30,14 @@ class WikiPagesList extends Component {
   openWikiPage(rowData) {
     // TO DO: Read
     // http://stackoverflow.com/questions/35465021/simple-goto-page-in-a-listview-in-react-native
-    console.log('openWikiPage() called!');
+    console.log(new Date() + ': openWikiPage() called!');
     console.log('rowData =');
     console.log(rowData);
+    // Prevent Loading from triggering error. Gets auto-clicked in iOS simulator.
+    if (rowData.url) {
+      Linking.openURL(rowData.url);
+    }
+  
   }
 
   getPagesFromApiAsync() {
