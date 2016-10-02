@@ -18,7 +18,7 @@ class WikiPagesList extends Component {
         <ListView
           dataSource={this.state.dataSource}
           renderRow={(rowData) =>
-            <TouchableOpacity onPress={this.openWikiPage(rowData)}>
+            <TouchableOpacity onPress={() => this.openWikiPage(rowData)}>
               <Text>{rowData.name}</Text>
             </TouchableOpacity>
           }
@@ -33,7 +33,6 @@ class WikiPagesList extends Component {
     console.log(new Date() + ': openWikiPage() called!');
     console.log('rowData =');
     console.log(rowData);
-    // Prevent Loading from triggering error. Gets auto-clicked in iOS simulator.
     if (rowData.url) {
       Linking.openURL(rowData.url);
     }
