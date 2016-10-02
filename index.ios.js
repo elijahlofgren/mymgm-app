@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
-import { AppRegistry, Text } from 'react-native';
+import { AppRegistry, Text, View } from 'react-native';
 var WikiPagesList = require('./WikiPagesList');
+var LocalEventsList = require('./LocalEventsList');
 
 class MyMGM extends Component {
   render() {
     return (
-      <Text>Hello world!</Text>
+      <View>
+        <Text>Hello world!</Text>
+        <LocalEventsList />
+      </View>
     );
   }
 }
 
-AppRegistry.registerComponent('MyMGM', () => WikiPagesList);
+//AppRegistry.registerComponent('MyMGM', () => WikiPagesList);
+AppRegistry.registerComponent('MyMGM', () => LocalEventsList);
