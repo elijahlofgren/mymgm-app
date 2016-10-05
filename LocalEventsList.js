@@ -12,7 +12,7 @@ class LocalEventsList extends Component {
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
       dataSource: this.ds.cloneWithRows([
-        {name: 'Loading...'}])
+        { name: 'Loading...' }])
     };
     this.getEventsFromApiAsync();
   }
@@ -22,11 +22,20 @@ class LocalEventsList extends Component {
         <ListView
           dataSource={this.state.dataSource}
           renderRow={(rowData) =>
-            <TouchableOpacity onPress={() => this.openEventLink(rowData)}>
-            <View style={[styles.eventCard]}>
-              <Text>{rowData.title}</Text>
-              <Text style={[styles.eventDate]}>
-              {moment(rowData.startDate).format("ddd, MMM Do h:mm a")} ({moment(rowData.startDate).fromNow()})</Text>
+            <TouchableOpacity onPress={() => this.openEventLink(rowData) }>
+              <View style={[styles.eventCard]}>
+                <View><Text>{rowData.title}</Text></View>
+
+                <View style={[styles.eventDateAndCategory]}>
+                  <View>
+                    <Text style={[styles.eventCategoryText]}>{rowData.category}</Text>
+                  </View>
+                  <View>
+                    <Text style={[styles.eventDateText]}>
+                      {moment(rowData.startDate).format("ddd, MMM Do h:mm a") } ({moment(rowData.startDate).fromNow() })
+                    </Text>
+                  </View>
+                </View>
               </View>
             </TouchableOpacity>
           }
@@ -34,7 +43,7 @@ class LocalEventsList extends Component {
       </View>
     );
   }
-  
+
   openEventLink(rowData) {
     if (rowData.url) {
       Linking.openURL(rowData.url);
@@ -60,14 +69,22 @@ class LocalEventsList extends Component {
 var styles = {
   eventCard: {
     borderRadius: 8,
-    margin:2,
-    padding:5,
+    margin: 2,
+    padding: 5,
     backgroundColor: '#99CCFF'
   },
-  eventDate: {
-    fontStyle:'italic',
-    fontSize: 10,
-    textAlign: 'right'
+  eventDateAndCategory: {
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'space-between'
+  },
+  eventDateText: {
+    fontStyle: 'italic',
+    fontSize: 10
+  },
+  eventCategoryText: {
+    fontStyle: 'italic',
+    fontSize: 10
   }
 };
 
