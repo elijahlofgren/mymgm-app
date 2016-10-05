@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import { AppRegistry, ListView, Text, View, TouchableOpacity, Linking } from 'react-native';
+import { AppRegistry, ListView, Text, View, TouchableOpacity, Linking, Stylesheet } from 'react-native';
+var moment = require('moment');
+
+
+
 
 class LocalEventsList extends Component {
   // Initialize the hardcoded data
@@ -19,7 +23,11 @@ class LocalEventsList extends Component {
           dataSource={this.state.dataSource}
           renderRow={(rowData) =>
             <TouchableOpacity onPress={() => this.openEventLink(rowData)}>
+            <View style={[styles.eventCard]}>
               <Text>{rowData.title}</Text>
+              <Text style={[styles.eventDate]}>
+              {moment(rowData.startDate).format("ddd, MMM Do h:mm a")} ({moment(rowData.startDate).fromNow()})</Text>
+              </View>
             </TouchableOpacity>
           }
           />
@@ -28,13 +36,9 @@ class LocalEventsList extends Component {
   }
   
   openEventLink(rowData) {
-    console.log(new Date() + ': openEventLink() called!');
-    console.log('rowData =');
-    console.log(rowData);
     if (rowData.url) {
       Linking.openURL(rowData.url);
     }
-  
   }
 
   getEventsFromApiAsync() {
@@ -51,5 +55,21 @@ class LocalEventsList extends Component {
   }
 
 }
+
+// TO DO: Get Stylesheet.create working
+var styles = {
+  eventCard: {
+    borderRadius: 8,
+    margin:2,
+    padding:5,
+    backgroundColor: '#99CCFF'
+  },
+  eventDate: {
+    fontStyle:'italic',
+    fontSize: 10,
+    textAlign: 'right'
+  }
+};
+
 
 module.exports = LocalEventsList;
