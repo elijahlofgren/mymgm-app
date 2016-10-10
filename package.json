@@ -7,7 +7,11 @@
   },
   "dependencies": {
     "moment": "^2.15.1",
-    "react": "^15.2.1",
-    "react-native": "^0.31.0"
+    "react": "^15.3.1",
+    "react-native": "^0.34.1"
+  },
+  "devDependencies": {
+    "eslint": "^3.7.1",
+    "eslint-plugin-react": "^6.4.0"
   }
 }
