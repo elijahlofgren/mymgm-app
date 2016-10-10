@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { AppRegistry, ListView, Text, View, TouchableOpacity, Linking, Stylesheet } from 'react-native';
+import {
+  AppRegistry, ListView, Text, View, TouchableOpacity, Linking, Stylesheet,
+  AsyncStorage
+} from 'react-native';
 var moment = require('moment');
-
-
-
 
 class LocalEventsList extends Component {
   // Initialize the hardcoded data
@@ -12,9 +12,10 @@ class LocalEventsList extends Component {
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
       dataSource: this.ds.cloneWithRows([
-        { name: 'Loading...' }])
+        { title: 'Loading...' }])
     };
-    this.getEventsFromApiAsync();
+    // Attempt to read from cache first
+    this.readCacheData();
   }
   render() {
     return (
@@ -50,19 +51,66 @@ class LocalEventsList extends Component {
     }
   }
 
-  getEventsFromApiAsync() {
-    return fetch('https://www.mymgm.org/api/localeventsapi')
-      .then((response) => response.json())
-      .then((responseJson) => {
-        this.setState({
-          dataSource: this.ds.cloneWithRows(responseJson)
-        })
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  async cacheData(localEvents) {
+    console.log('cacheData() called');
+    try {
+      await AsyncStorage.setItem('@mymgmDataCache:localevents', JSON.stringify(localEvents));
+    } catch (error) {
+      console.error(error);
+    }
   }
 
+  async readCacheData() {
+    console.log('readCacheData() called');
+    try {
+      const value = await AsyncStorage.getItem('@mymgmDataCache:localevents');
+      if (value !== null) {
+        var localEvents = JSON.parse(value);
+        this.setState({
+          dataSource: this.ds.cloneWithRows(localEvents)
+        });
+      }
+      try {
+        // Now fetch live data
+        this.getEventsFromApiAsync();
+      } catch (error) {
+        console.error(error);
+      }
+    } catch (error) {
+      // Error retrieving data from cache
+      this.getEventsFromApiAsync();
+    }
+  }
+
+  getEventsFromApiAsync() {
+    console.log('getEventsFromApiAsync() called');
+    // Couldn't get catch of network error in airplane mode working using fetch() so using XMLHttpRequest
+    // so that we prevent app from crashing in airplane mode.
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = (e) => {
+      if (request.readyState !== 4) {
+        return;
+      }
+
+      if (request.status === 200) {
+        console.log('success', request.responseText);
+        var responseJson = JSON.parse(request.responseText);
+        console.log("Successfully loaded!");
+        this.setState({
+          dataSource: this.ds.cloneWithRows(responseJson)
+        });
+        this.cacheData(responseJson);
+      } else {
+        console.warn('error');
+      }
+    };
+    try {
+      request.open('GET', 'https://www.mymgm.org/api/localeventsapi');
+      request.send();
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }
 
 // TO DO: Get Stylesheet.create working
