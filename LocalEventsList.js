@@ -3,6 +3,8 @@ import {
   AppRegistry, ListView, Text, View, TouchableOpacity, Linking, Stylesheet,
   AsyncStorage
 } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 var moment = require('moment');
 
 class LocalEventsList extends Component {
@@ -23,28 +25,40 @@ class LocalEventsList extends Component {
         <ListView
           dataSource={this.state.dataSource}
           renderRow={(rowData) =>
-            <TouchableOpacity onPress={() => this.openEventLink(rowData) }>
-              <View style={[styles.eventCard]}>
-                <View><Text>{rowData.title}</Text></View>
+            <View style={[styles.eventCard]}>
+              <View>
+                <TouchableOpacity onPress={() => this.openEventLink(rowData) }>
+                  <Text>{rowData.title}</Text>
+                </TouchableOpacity>
+              </View>
 
-                <View style={[styles.eventDateAndCategory]}>
-                  <View>
-                    <Text style={[styles.eventCategoryText]}>{rowData.category}</Text>
-                  </View>
-                  <View>
-                    <Text style={[styles.eventDateText]}>
-                      {moment(rowData.startDate).format("ddd, MMM Do h:mm a") } ({moment(rowData.startDate).fromNow() })
-                    </Text>
-                  </View>
+              <View style={[styles.eventDateAndCategory]}>
+                <View>
+                  <Text style={[styles.eventCategoryText]}>{rowData.category}</Text>
+                </View>
+                <View>
+                  <Text style={[styles.eventDateText]}>
+                    {moment(rowData.startDate).format("ddd, MMM Do h:mm a") } ({moment(rowData.startDate).fromNow() })
+                  </Text>
+                </View>
+                <View>
+                  <TouchableOpacity onPress={ () => this.openEventAddress(rowData) } style={[styles.eventDirectionsIcon]}>
+                    <Icon name="map-marker" ></Icon>
+                  </TouchableOpacity>
                 </View>
               </View>
-            </TouchableOpacity>
+            </View>
           }
           />
       </View>
     );
   }
 
+  openEventAddress(rowData) {
+    if (rowData.address) {
+      Linking.openURL('https://maps.google.com?q=' + encodeURIComponent(rowData.address));
+    }
+  }
   openEventLink(rowData) {
     if (rowData.url) {
       Linking.openURL(rowData.url);
@@ -133,6 +147,11 @@ var styles = {
   eventCategoryText: {
     fontStyle: 'italic',
     fontSize: 10
+  },
+  eventDirectionsIcon: {
+    paddingBottom: 5,
+    paddingRight: 10,
+    paddingLeft: 10
   }
 };
 
